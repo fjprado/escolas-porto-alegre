@@ -1,6 +1,5 @@
 #map-canvas {
-  width: 45vw;
-  height: 70vh;
+  height: 65vh;
   display: "flex";
   flex-direction: "column";
   border: "1px solid lightgray";

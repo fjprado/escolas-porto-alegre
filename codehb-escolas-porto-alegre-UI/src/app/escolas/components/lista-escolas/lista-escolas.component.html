@@ -1,1 +1,5 @@
-<p>lista-escolas works!</p>
+<ul class="list-group">
+  <li *ngFor="let item of this.listaEscolas" class="list-group-item">
+    {{ item.nome }} - {{ item.distanciaOrigem | number: "1.0-4":"pt" }} Km
+  </li>
+</ul>

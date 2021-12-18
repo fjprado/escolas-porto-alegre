@@ -27,7 +27,7 @@ namespace codehb_escolas_porto_alegre.Controllers
         /// <param name="endereco">Informa qual o endereço de pesquisa</param>
         /// <response code="200">Retorna a lista de endereços</response>
         /// <response code="204">Se não houver enderecos</response>   
-        [HttpPost]
+        [HttpPost("GetListEnderecosSugeridos")]
         public async Task<ActionResult<IEnumerable<Endereco>>> GetListEnderecosSugeridos([FromBody] EnderecoOrigemModel endereco)
         {
             var enderecos = await _enderecoService.GetListEnderecosSugeridos(endereco);

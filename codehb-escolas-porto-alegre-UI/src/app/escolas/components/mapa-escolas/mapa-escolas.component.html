@@ -1,13 +1,11 @@
 <div class="mapa-escolas">
   <div #map id="map-canvas"></div>
-  <div
-    *ngIf="this.showMapPill"
-    class="map-pill"
-    [ngClass]="{ 'map-pill-show': this.showMapPill }"
-  >
-    <div class="map-pill-img"></div>
-    <div class="map-pill-content">
-      <div class="map-pill-label">Dados da escola</div>
+  <ng-template [ngIf]="this.showDetails">
+    <div class="map-pill">
+      <div class="map-pill-img"></div>
+      <div class="map-pill-content">
+        <div class="map-pill-label">Dados da escola</div>
+      </div>
     </div>
-  </div>
+  </ng-template>
 </div>

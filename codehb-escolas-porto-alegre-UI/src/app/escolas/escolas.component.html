@@ -1,1 +1,48 @@
-<app-mapa-escolas></app-mapa-escolas>
+<div class="container">
+  <div class="search">
+    <form [formGroup]="form" class="search-form">
+      <div class="row justify-content-md-center">
+        <div class="form-group col-lg-6 align-self-center">
+          <label class="label-input" for="inputAddress"
+            >Informe seu endereço:</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            formControlName="address"
+            id="inputAddress"
+            list="datalistOptions"
+            aria-describedby="addressHelp"
+            placeholder="Exemplo: Rua Gonçalo de Carvalho, 500"
+          />
+          <datalist id="datalistOptions">
+            <option
+              *ngFor="let item of this.listaOptions"
+              [value]="item"
+            ></option>
+          </datalist>
+
+          <small id="addressHelp" class="form-text text-muted"
+            >Ao digitar será(ão) mostrada(s) sugestões de preenchimento</small
+          >
+        </div>
+        <button
+          type="submit"
+          class="btn btn-warning col-lg-3 align-self-center"
+          (click)="this.pesquisarEscolas()"
+        >
+          Pesquisar Escolas Próximas
+        </button>
+      </div>
+    </form>
+  </div>
+  <div class="content-escolas col-lg-12">
+    <div class="row justify-content-md-center col-lg-12">
+      <app-lista-escolas
+        class="col-lg-4"
+        [lista-escolas]="this.listaEscolas"
+      ></app-lista-escolas>
+      <app-mapa-escolas class="col-lg-8"></app-mapa-escolas>
+    </div>
+  </div>
+</div>

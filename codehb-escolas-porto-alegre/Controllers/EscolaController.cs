@@ -27,7 +27,7 @@ namespace codehb_escolas_porto_alegre.Controllers
         /// <param name="endereco">Informa qual o endereço de origem</param>
         /// <response code="200">Retorna a lista de escolas</response>
         /// <response code="204">Se não houver lista de escolas</response>   
-        [HttpPost]
+        [HttpPost("GetListEscolas")]
         public async Task<ActionResult<IEnumerable<Escola>>> GetListEscolas([FromBody] EnderecoOrigemModel enderecoOrigem)
         {
             var escolas = await _escolaService.GetListEscolas(enderecoOrigem);
