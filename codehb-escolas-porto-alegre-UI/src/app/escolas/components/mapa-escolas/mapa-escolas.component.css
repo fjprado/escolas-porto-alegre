@@ -1,0 +1,46 @@
+#map-canvas {
+  width: 45vw;
+  height: 70vh;
+  display: "flex";
+  flex-direction: "column";
+  border: "1px solid lightgray";
+  align-items: "center";
+  margin: "0 auto";
+  border-radius: "5px";
+  padding: "5px";
+}
+
+.map-pill {
+  background: #fff;
+  position: relative;
+  bottom: 50px;
+  left: 0;
+  right: 0;
+  margin: 50px;
+  border-radius: 50px;
+  padding: 12px;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  transition: bottom 0.5s;
+}
+
+.map-pill-img {
+  background: url("./../../../../assets/icons/student-img.svg") no-repeat;
+  background-size: cover;
+  background-position: center;
+  width: 50px;
+  height: 50px;
+}
+
+.map-pill-content {
+  margin-left: 12px;
+}
+
+.map-pill-label {
+  font-size: 1em;
+}
+
+.map-pill-show {
+  bottom: 130px !important;
+}
