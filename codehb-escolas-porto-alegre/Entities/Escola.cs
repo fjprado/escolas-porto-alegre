@@ -7,7 +7,6 @@ namespace codehb_escolas_porto_alegre.Entities
 {
     public class Escola
     {
-        public Guid Id { get; set; }
         public string Nome { get; set; }
         public string Telefone { get; set; }
         public string Email { get; set; }
