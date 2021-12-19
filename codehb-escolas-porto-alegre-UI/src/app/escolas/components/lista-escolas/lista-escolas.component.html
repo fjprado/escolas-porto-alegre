@@ -1,5 +1,23 @@
 <ul class="list-group">
-  <li *ngFor="let item of this.listaEscolas" class="list-group-item">
-    {{ item.nome }} - {{ item.distanciaOrigem | number: "1.0-4":"pt" }} Km
+  <li
+    *ngFor="let item of this.listaEscolas; let indexOfelement = index"
+    class="list-group-item"
+    [ngClass]="{ active: this.indexRotaAtiva === indexOfelement }"
+  >
+    <div class="row align-items-center">
+      <div class="col-lg-9">
+        <b>{{ item.nome }} </b><br />
+        <b>Distância:</b> {{ item.distanciaOrigem | number: "1.0-4":"pt" }}KM
+      </div>
+      <div class="col-lg-3">
+        <button
+          type="submit"
+          class="btn btn-danger"
+          (click)="this.verRota(item, indexOfelement)"
+        >
+          Ver Rota
+        </button>
+      </div>
+    </div>
   </li>
 </ul>

@@ -9,6 +9,6 @@ namespace codehb_escolas_porto_alegre.Services.Escolas
 {
     public interface IEscolaService
     {
-        Task<List<Escola>> GetListEscolas(EnderecoOrigemModel enderecoOrigem);
+        Task<List<Escola>> GetListEscolas(Coordenada coordenadaOrigem);
     }
 }

@@ -10,6 +10,8 @@ import {
   tap,
 } from 'rxjs/operators';
 import { EscolasService } from './escolas.service';
+import { Coordenada } from './model/coordenada.model';
+import { Escola } from './model/escola.model';
 
 @Component({
   selector: 'app-escolas',
@@ -18,9 +20,10 @@ import { EscolasService } from './escolas.service';
 })
 export class EscolasComponent implements OnInit {
   public form!: FormGroup;
-  endereco = '';
-  listaOptions: any;
-  listaEscolas: any;
+  endereco: string = '';
+  enderecoCoordenada: Coordenada = new Coordenada();
+  listaOptions: string[] = [];
+  listaEscolas: Escola[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -52,7 +55,14 @@ export class EscolasComponent implements OnInit {
   }
 
   async pesquisarEscolas() {
-    this.listaEscolas = await this.escolasService.obterEscolas(this.endereco);
-    this.mapaEscolasComponent.carregarMapaInicial(this.listaEscolas);
+    this.enderecoCoordenada =
+      await this.escolasService.obterEnderecoCoordendaAtual(this.endereco);
+    this.listaEscolas = await this.escolasService.obterEscolas(
+      this.enderecoCoordenada
+    );
+    this.mapaEscolasComponent.carregarMapaInicial(
+      this.enderecoCoordenada,
+      this.listaEscolas
+    );
   }
 }

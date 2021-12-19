@@ -35,5 +35,34 @@ namespace codehb_escolas_porto_alegre.Services.Enderecos
 
             return result.ResourceSets.SelectMany(rs => rs.Resources.SelectMany(r => r.Value.Select(v => v.Address))).ToList();
         }
+
+        public async Task<Coordenada> GetCoordenadasEndereco(EnderecoOrigemModel endereco)
+        {
+            var urlConsultaLocalizacao = "http://dev.virtualearth.net/REST/v1/Locations";
+            var client = new RestRequest(urlConsultaLocalizacao, Method.GET);
+            var key = "AmldTSU6HNRemL234Vk0ZkHEVcK1aU-kCHVmNA_fj09_Crqkg9wZWJdCc-PYSIK6";
+
+            client.RequestFormat = DataFormat.Json;
+            client.AddHeader("Content-type", "application/json");
+            client.AddParameter("countryRegion", "BR", ParameterType.QueryString);
+            client.AddParameter("addressLine", endereco.Endereco, ParameterType.QueryString);
+            client.AddParameter("key", key, ParameterType.QueryString);
+
+            RestClient _rest = new RestClient();
+            var response = await _rest.ExecuteAsync<JObject>(client);
+
+            var jsonSerializerSettings = new JsonSerializerSettings();
+            jsonSerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
+
+            var result = JsonConvert.DeserializeObject<LocalizacaoConsultaResponse>(response.Content, jsonSerializerSettings);
+
+            return GetCoordenadas(result);
+        }
+
+        private Coordenada GetCoordenadas(LocalizacaoConsultaResponse enderecoOrigemAPI)
+        {
+            var coordenadasList = enderecoOrigemAPI.ResourceSets.SelectMany(rs => rs.Resources.SelectMany(r => r.GeocodePoints)).FirstOrDefault().Coordinates;
+            return new Coordenada() { Latitude = coordenadasList[0], Longitude = coordenadasList[1] };
+        }
     }
 }

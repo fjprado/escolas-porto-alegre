@@ -10,5 +10,6 @@ namespace codehb_escolas_porto_alegre.Services.Enderecos
     public interface IEnderecoService
     {
         Task<List<Endereco>> GetListEnderecosSugeridos(EnderecoOrigemModel endereco);
+        Task<Coordenada> GetCoordenadasEndereco(EnderecoOrigemModel endereco);
     }
 }

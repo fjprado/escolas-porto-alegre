@@ -37,5 +37,16 @@ namespace codehb_escolas_porto_alegre.Controllers
 
             return Ok(enderecos);
         }
+
+        [HttpPost("GetCoordenadasEndereco")]
+        public async Task<ActionResult<Coordenada>> GetCoordenadasEndereco([FromBody] EnderecoOrigemModel endereco)
+        {
+            var coordenada = await _enderecoService.GetCoordenadasEndereco(endereco);
+
+            if (coordenada != null)
+                return Ok(coordenada);
+
+            return NoContent();            
+        }
     }    
 }

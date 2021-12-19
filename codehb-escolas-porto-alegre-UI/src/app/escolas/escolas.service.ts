@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Coordenada } from './model/coordenada.model';
+import { Escola } from './model/escola.model';
 
 @Injectable({ providedIn: 'root' })
 export class EscolasService {
@@ -7,17 +9,31 @@ export class EscolasService {
 
   constructor(private httpClient: HttpClient) {}
 
-  async obterSugestoesEndereco(value: string): Promise<any> {
+  async obterSugestoesEndereco(value: string): Promise<Array<string>> {
     return this.httpClient
-      .post(`${this.urlAPI}/Endereco/GetListEnderecosSugeridos`, {
-        endereco: value,
+      .post<Array<string>>(
+        `${this.urlAPI}/Endereco/GetListEnderecosSugeridos`,
+        {
+          endereco: value,
+        }
+      )
+      .toPromise();
+  }
+
+  async obterEnderecoCoordendaAtual(endereco: string): Promise<Coordenada> {
+    return this.httpClient
+      .post<Coordenada>(`${this.urlAPI}/Endereco/GetCoordenadasEndereco`, {
+        endereco,
       })
       .toPromise();
   }
 
-  async obterEscolas(endereco: string): Promise<any> {
+  async obterEscolas(enderecoCoordenada: Coordenada): Promise<Array<Escola>> {
     return this.httpClient
-      .post(`${this.urlAPI}/Escola/GetListEscolas`, { endereco })
+      .post<Array<Escola>>(
+        `${this.urlAPI}/Escola/GetListEscolas`,
+        enderecoCoordenada
+      )
       .toPromise();
   }
 }

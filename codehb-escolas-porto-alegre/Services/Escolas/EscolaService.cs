@@ -14,7 +14,7 @@ namespace codehb_escolas_porto_alegre.Services.Escolas
 {
     public class EscolaService : IEscolaService
     {
-        public async Task<List<Escola>> GetListEscolas(EnderecoOrigemModel enderecoOrigem)
+        public async Task<List<Escola>> GetListEscolas(Coordenada coordenadaOrigem)
         {
             try
             {
@@ -34,44 +34,13 @@ namespace codehb_escolas_porto_alegre.Services.Escolas
 
                 var escolasConsultaResponse = JsonConvert.DeserializeObject<EscolaConsultaResponse>(response.Content, jsonSerializerSettings);
 
-                var enderecoOrigemAPI = await ObterEnderecoCoordenadas(enderecoOrigem.Endereco);
-
-                return await OrdernarListaEscolas(escolasConsultaResponse.Result.Records, GetCoordenadas(enderecoOrigemAPI));
+                return await OrdernarListaEscolas(escolasConsultaResponse.Result.Records, coordenadaOrigem);
             }
             catch (Exception ex)
             {
                 throw ex;
-            }
-            
-        }
-       
-        private async Task<LocalizacaoConsultaResponse> ObterEnderecoCoordenadas(string enderecoOrigem)
-        {
-            var urlConsultaLocalizacao = "http://dev.virtualearth.net/REST/v1/Locations";
-            var client = new RestRequest(urlConsultaLocalizacao, Method.GET);
-            var key = "AmldTSU6HNRemL234Vk0ZkHEVcK1aU-kCHVmNA_fj09_Crqkg9wZWJdCc-PYSIK6";
-
-            client.RequestFormat = DataFormat.Json;
-            client.AddHeader("Content-type", "application/json");
-            client.AddParameter("countryRegion", "BR", ParameterType.QueryString);
-            client.AddParameter("addressLine", enderecoOrigem, ParameterType.QueryString);
-            client.AddParameter("key", key, ParameterType.QueryString);
-
-            RestClient _rest = new RestClient();
-            var response = await _rest.ExecuteAsync<JObject>(client);
-
-            var jsonSerializerSettings = new JsonSerializerSettings();
-            jsonSerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
-
-            return JsonConvert.DeserializeObject<LocalizacaoConsultaResponse>(response.Content, jsonSerializerSettings);
-        }
-
-        private Coordenada GetCoordenadas(LocalizacaoConsultaResponse enderecoOrigemAPI)
-        {
-            var coordenadasList = enderecoOrigemAPI.ResourceSets.SelectMany(rs => rs.Resources.SelectMany(r => r.GeocodePoints)).FirstOrDefault().Coordinates;
-            return new Coordenada() { Latitude = coordenadasList[0], Longitude = coordenadasList[1] };
-        }
-
+            }            
+        }   
 
         private async Task<List<Escola>> OrdernarListaEscolas(List<Escola> escolas, Coordenada coordenadasOrigem)
         {

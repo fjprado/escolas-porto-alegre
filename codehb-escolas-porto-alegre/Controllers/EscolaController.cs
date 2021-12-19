@@ -28,9 +28,9 @@ namespace codehb_escolas_porto_alegre.Controllers
         /// <response code="200">Retorna a lista de escolas</response>
         /// <response code="204">Se não houver lista de escolas</response>   
         [HttpPost("GetListEscolas")]
-        public async Task<ActionResult<IEnumerable<Escola>>> GetListEscolas([FromBody] EnderecoOrigemModel enderecoOrigem)
+        public async Task<ActionResult<IEnumerable<Escola>>> GetListEscolas([FromBody] Coordenada coordenadaOrigem)
         {
-            var escolas = await _escolaService.GetListEscolas(enderecoOrigem);
+            var escolas = await _escolaService.GetListEscolas(coordenadaOrigem);
 
             if (escolas.Count == 0)
                 return NoContent();

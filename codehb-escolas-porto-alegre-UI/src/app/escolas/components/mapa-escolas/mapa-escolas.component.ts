@@ -1,5 +1,7 @@
+import { Coordenada } from './../../model/coordenada.model';
 import { Component, Input, OnInit } from '@angular/core';
 import {} from 'googlemaps';
+import { Escola } from '../../model/escola.model';
 
 @Component({
   selector: 'app-mapa-escolas',
@@ -8,8 +10,8 @@ import {} from 'googlemaps';
 })
 export class MapaEscolasComponent implements OnInit {
   map: google.maps.Map | undefined;
-
   source: google.maps.LatLngLiteral | undefined;
+  markers: google.maps.Marker[] = [];
 
   options: google.maps.MapOptions = {
     mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -22,14 +24,15 @@ export class MapaEscolasComponent implements OnInit {
   ds: google.maps.DirectionsService | undefined;
   dr: google.maps.DirectionsRenderer | undefined;
 
-  dadosEscola: any;
-  showDetails = false;
-
   ngOnInit(): void {
     this.carregarMapaInicial();
   }
 
-  public carregarMapaInicial(listaEscolas: any = null) {
+  public carregarMapaInicial(
+    enderecoCoordenada: any = null,
+    listaEscolas: any = null,
+    mostrarRota = false
+  ) {
     this.ds = new google.maps.DirectionsService();
     this.dr = new google.maps.DirectionsRenderer({
       map: undefined,
@@ -37,10 +40,22 @@ export class MapaEscolasComponent implements OnInit {
     });
 
     navigator.geolocation.getCurrentPosition((position) => {
-      this.source = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-      };
+      if (enderecoCoordenada == null) {
+        this.source = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
+      } else if (enderecoCoordenada != null && !mostrarRota) {
+        this.source = {
+          lat: enderecoCoordenada.latitude,
+          lng: enderecoCoordenada.longitude,
+        };
+      } else {
+        this.source = {
+          lat: enderecoCoordenada.lat,
+          lng: enderecoCoordenada.lng,
+        };
+      }
 
       this.map = new google.maps.Map(
         document.getElementById('map-canvas') as Element,
@@ -50,7 +65,7 @@ export class MapaEscolasComponent implements OnInit {
         }
       );
 
-      var markerStart = new google.maps.Marker({
+      const markerStart = new google.maps.Marker({
         position: this.source,
         map: this.map,
         icon: {
@@ -60,28 +75,35 @@ export class MapaEscolasComponent implements OnInit {
       });
 
       if (listaEscolas) {
-        listaEscolas.forEach((e: any) => {
-          const destinationMarker = new google.maps.Marker({
-            position: {
-              lat: e.latitude,
-              lng: e.longitude,
-            },
-            map: this.map,
-            icon: {
-              url: './assets/icons/college-pin.svg',
-              scaledSize: new google.maps.Size(40, 40),
-            },
-          });
-
-          this.attachData(destinationMarker, e, this.map);
-        });
+        this.destinationsMarkers(this.map, listaEscolas);
       }
-
-      //this.setRoutePolyline();
     });
   }
 
-  private attachData(marker: google.maps.Marker, data: any, map: any) {
+  private destinationsMarkers(map: google.maps.Map, listaEscolas: Escola[]) {
+    console.log(listaEscolas);
+    listaEscolas.forEach((e: Escola) => {
+      const destinationMarker = new google.maps.Marker({
+        position: {
+          lat: e.latitude!,
+          lng: e.longitude!,
+        },
+        map: this.map,
+        icon: {
+          url: './assets/icons/college-pin.svg',
+          scaledSize: new google.maps.Size(40, 40),
+        },
+      });
+
+      this.attachData(destinationMarker, e, this.map!);
+    });
+  }
+
+  private attachData(
+    marker: google.maps.Marker,
+    data: Escola,
+    map: google.maps.Map
+  ) {
     const infowindow = new google.maps.InfoWindow({
       content: `<h2>${data.nome}</h2>
       <div id="bodyContent">
@@ -93,7 +115,6 @@ export class MapaEscolasComponent implements OnInit {
       </div>`,
     });
 
-    console.log(data);
     marker.addListener('click', () => {
       infowindow.open(marker.get('map'), marker);
     });
@@ -103,22 +124,27 @@ export class MapaEscolasComponent implements OnInit {
     });
   }
 
-  // setRoutePolyline() {
-  //   let request = {
-  //     origin: this.source,
-  //     destination: this.destination,
-  //     travelMode: google.maps.TravelMode.DRIVING,
-  //   };
+  setRoutePolyline(item: Escola) {
+    const destination = {
+      lat: item.latitude!,
+      lng: item.longitude!,
+    };
 
-  //   this.ds?.route(request, (res, status) => {
-  //     this.dr?.setOptions({
-  //       suppressPolylines: false,
-  //       map: this.map,
-  //     });
+    const request = {
+      origin: this.source,
+      destination,
+      travelMode: google.maps.TravelMode.DRIVING,
+    };
 
-  //     if (status === google.maps.DirectionsStatus.OK) {
-  //       this.dr?.setDirections(res);
-  //     }
-  //   });
-  // }
+    this.ds?.route(request, (res, status) => {
+      this.dr?.setOptions({
+        suppressPolylines: false,
+        map: this.map,
+      });
+
+      if (status === google.maps.DirectionsStatus.OK) {
+        this.dr?.setDirections(res);
+      }
+    });
+  }
 }
