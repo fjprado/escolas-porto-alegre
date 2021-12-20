@@ -11,7 +11,6 @@ import { Escola } from '../../model/escola.model';
 export class MapaEscolasComponent implements OnInit {
   map: google.maps.Map | undefined;
   source: google.maps.LatLngLiteral | undefined;
-  markers: google.maps.Marker[] = [];
 
   options: google.maps.MapOptions = {
     mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -70,7 +69,7 @@ export class MapaEscolasComponent implements OnInit {
         map: this.map,
         icon: {
           url: './assets/icons/user-pin.svg',
-          scaledSize: new google.maps.Size(40, 40),
+          scaledSize: new google.maps.Size(35, 35),
         },
       });
 
@@ -91,7 +90,7 @@ export class MapaEscolasComponent implements OnInit {
         map: this.map,
         icon: {
           url: './assets/icons/college-pin.svg',
-          scaledSize: new google.maps.Size(40, 40),
+          scaledSize: new google.maps.Size(30, 30),
         },
       });
 

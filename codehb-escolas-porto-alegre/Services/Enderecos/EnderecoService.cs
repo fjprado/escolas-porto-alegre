@@ -14,49 +14,63 @@ namespace codehb_escolas_porto_alegre.Services.Enderecos
     {
         public async Task<List<Endereco>> GetListEnderecosSugeridos(EnderecoOrigemModel endereco)
         {
-            var urlConsultaLocalizacao = "http://dev.virtualearth.net/REST/v1/Autosuggest";
-            var client = new RestRequest(urlConsultaLocalizacao, Method.GET);
-            var key = "AmldTSU6HNRemL234Vk0ZkHEVcK1aU-kCHVmNA_fj09_Crqkg9wZWJdCc-PYSIK6";
+            try
+            {
+                var urlConsultaLocalizacao = "http://dev.virtualearth.net/REST/v1/Autosuggest";
+                var client = new RestRequest(urlConsultaLocalizacao, Method.GET);
+                var key = "AmldTSU6HNRemL234Vk0ZkHEVcK1aU-kCHVmNA_fj09_Crqkg9wZWJdCc-PYSIK6";
 
-            client.RequestFormat = DataFormat.Json;
-            client.AddHeader("Content-type", "application/json");
-            client.AddParameter("query", endereco.Endereco, ParameterType.QueryString);
-            client.AddParameter("userLocation", "-30.08,-51.21", ParameterType.QueryString);
-            client.AddParameter("includeEntityTypes", "Address", ParameterType.QueryString);
-            client.AddParameter("key", key, ParameterType.QueryString);
+                client.RequestFormat = DataFormat.Json;
+                client.AddHeader("Content-type", "application/json");
+                client.AddParameter("query", endereco.Endereco, ParameterType.QueryString);
+                client.AddParameter("userLocation", "-30.08,-51.21", ParameterType.QueryString);
+                client.AddParameter("includeEntityTypes", "Address", ParameterType.QueryString);
+                client.AddParameter("key", key, ParameterType.QueryString);
 
-            RestClient _rest = new RestClient();
-            var response = await _rest.ExecuteAsync<JObject>(client);
+                RestClient _rest = new RestClient();
+                var response = await _rest.ExecuteAsync<JObject>(client);
 
-            var jsonSerializerSettings = new JsonSerializerSettings();
-            jsonSerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
+                var jsonSerializerSettings = new JsonSerializerSettings();
+                jsonSerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
 
-            var result = JsonConvert.DeserializeObject<EnderecoSugeridoConsultaResponse>(response.Content, jsonSerializerSettings);
+                var result = JsonConvert.DeserializeObject<EnderecoSugeridoConsultaResponse>(response.Content, jsonSerializerSettings);
 
-            return result.ResourceSets.SelectMany(rs => rs.Resources.SelectMany(r => r.Value.Select(v => v.Address))).ToList();
+                return result.ResourceSets.SelectMany(rs => rs.Resources.SelectMany(r => r.Value.Select(v => v.Address))).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }            
         }
 
         public async Task<Coordenada> GetCoordenadasEndereco(EnderecoOrigemModel endereco)
         {
-            var urlConsultaLocalizacao = "http://dev.virtualearth.net/REST/v1/Locations";
-            var client = new RestRequest(urlConsultaLocalizacao, Method.GET);
-            var key = "AmldTSU6HNRemL234Vk0ZkHEVcK1aU-kCHVmNA_fj09_Crqkg9wZWJdCc-PYSIK6";
+            try
+            {
+                var urlConsultaLocalizacao = "http://dev.virtualearth.net/REST/v1/Locations";
+                var client = new RestRequest(urlConsultaLocalizacao, Method.GET);
+                var key = "AmldTSU6HNRemL234Vk0ZkHEVcK1aU-kCHVmNA_fj09_Crqkg9wZWJdCc-PYSIK6";
 
-            client.RequestFormat = DataFormat.Json;
-            client.AddHeader("Content-type", "application/json");
-            client.AddParameter("countryRegion", "BR", ParameterType.QueryString);
-            client.AddParameter("addressLine", endereco.Endereco, ParameterType.QueryString);
-            client.AddParameter("key", key, ParameterType.QueryString);
+                client.RequestFormat = DataFormat.Json;
+                client.AddHeader("Content-type", "application/json");
+                client.AddParameter("countryRegion", "BR", ParameterType.QueryString);
+                client.AddParameter("addressLine", endereco.Endereco, ParameterType.QueryString);
+                client.AddParameter("key", key, ParameterType.QueryString);
 
-            RestClient _rest = new RestClient();
-            var response = await _rest.ExecuteAsync<JObject>(client);
+                RestClient _rest = new RestClient();
+                var response = await _rest.ExecuteAsync<JObject>(client);
 
-            var jsonSerializerSettings = new JsonSerializerSettings();
-            jsonSerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
+                var jsonSerializerSettings = new JsonSerializerSettings();
+                jsonSerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
 
-            var result = JsonConvert.DeserializeObject<LocalizacaoConsultaResponse>(response.Content, jsonSerializerSettings);
+                var result = JsonConvert.DeserializeObject<LocalizacaoConsultaResponse>(response.Content, jsonSerializerSettings);
 
-            return GetCoordenadas(result);
+                return GetCoordenadas(result);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }            
         }
 
         private Coordenada GetCoordenadas(LocalizacaoConsultaResponse enderecoOrigemAPI)

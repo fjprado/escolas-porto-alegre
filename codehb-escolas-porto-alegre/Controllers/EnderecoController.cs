@@ -30,23 +30,37 @@ namespace codehb_escolas_porto_alegre.Controllers
         [HttpPost("GetListEnderecosSugeridos")]
         public async Task<ActionResult<IEnumerable<Endereco>>> GetListEnderecosSugeridos([FromBody] EnderecoOrigemModel endereco)
         {
-            var enderecos = await _enderecoService.GetListEnderecosSugeridos(endereco);
+            try
+            {
+                var enderecos = await _enderecoService.GetListEnderecosSugeridos(endereco);
 
-            if (enderecos.Count == 0)
-                return NoContent();
+                if (enderecos.Count == 0)
+                    return NoContent();
 
-            return Ok(enderecos);
+                return Ok(enderecos);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
         [HttpPost("GetCoordenadasEndereco")]
         public async Task<ActionResult<Coordenada>> GetCoordenadasEndereco([FromBody] EnderecoOrigemModel endereco)
         {
-            var coordenada = await _enderecoService.GetCoordenadasEndereco(endereco);
+            try
+            {
+                var coordenada = await _enderecoService.GetCoordenadasEndereco(endereco);
 
-            if (coordenada != null)
-                return Ok(coordenada);
+                if (coordenada != null)
+                    return Ok(coordenada);
 
-            return NoContent();            
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }                        
         }
     }    
 }

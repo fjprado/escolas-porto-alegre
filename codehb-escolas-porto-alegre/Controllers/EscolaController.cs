@@ -30,13 +30,19 @@ namespace codehb_escolas_porto_alegre.Controllers
         [HttpPost("GetListEscolas")]
         public async Task<ActionResult<IEnumerable<Escola>>> GetListEscolas([FromBody] Coordenada coordenadaOrigem)
         {
-            var escolas = await _escolaService.GetListEscolas(coordenadaOrigem);
+            try
+            {
+                var escolas = await _escolaService.GetListEscolas(coordenadaOrigem);
 
-            if (escolas.Count == 0)
-                return NoContent();
+                if (escolas.Count == 0)
+                    return NoContent();
 
-            return Ok(escolas);
+                return Ok(escolas);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }                
         }
-
     }
 }

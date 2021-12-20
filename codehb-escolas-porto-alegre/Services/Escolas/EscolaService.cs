@@ -25,12 +25,15 @@ namespace codehb_escolas_porto_alegre.Services.Escolas
                 client.RequestFormat = DataFormat.Json;
                 client.AddHeader("Content-type", "application/json");
                 client.AddParameter("resource_id", resourceId, ParameterType.QueryString);
+                client.AddParameter("limit", 500, ParameterType.QueryString);
 
                 RestClient _rest = new RestClient();
                 var response = await _rest.ExecuteAsync<JObject>(client);
 
-                var jsonSerializerSettings = new JsonSerializerSettings();
-                jsonSerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
+                var jsonSerializerSettings = new JsonSerializerSettings
+                {
+                    MissingMemberHandling = MissingMemberHandling.Ignore
+                };
 
                 var escolasConsultaResponse = JsonConvert.DeserializeObject<EscolaConsultaResponse>(response.Content, jsonSerializerSettings);
 
@@ -40,39 +43,48 @@ namespace codehb_escolas_porto_alegre.Services.Escolas
             {
                 throw ex;
             }            
-        }   
+        }
 
         private async Task<List<Escola>> OrdernarListaEscolas(List<Escola> escolas, Coordenada coordenadasOrigem)
         {
-            var urlConsultaLocalizacao = "https://dev.virtualearth.net/REST/v1/Routes/DistanceMatrix";
-            var client = new RestRequest(urlConsultaLocalizacao, Method.POST);
-            var key = "AmldTSU6HNRemL234Vk0ZkHEVcK1aU-kCHVmNA_fj09_Crqkg9wZWJdCc-PYSIK6";
-            var coordenadasDestino = escolas.Select(s => new Coordenada(){ Latitude = s.Latitude, Longitude = s.Longitude }).ToList();
-            var serializedRequest = JsonConvert.SerializeObject(new DistanciaConsultaRequest()
+            try
             {
-                Origins = new List<Coordenada>() { coordenadasOrigem },
-                Destinations = coordenadasDestino
-            });
+                var urlConsultaLocalizacao = "https://dev.virtualearth.net/REST/v1/Routes/DistanceMatrix";
+                var client = new RestRequest(urlConsultaLocalizacao, Method.POST);
+                var key = "AmldTSU6HNRemL234Vk0ZkHEVcK1aU-kCHVmNA_fj09_Crqkg9wZWJdCc-PYSIK6";
+                var escolasSemPosicao = escolas.Where(w => w.Latitude == 0 || w.Longitude == 0).ToList();
+                escolas = escolas.Where(w => w.Latitude != 0 && w.Longitude != 0).ToList();
+                var coordenadasDestino = escolas.Select(s => new Coordenada() { Latitude = s.Latitude, Longitude = s.Longitude }).ToList();
+                var serializedRequest = JsonConvert.SerializeObject(new DistanciaConsultaRequest()
+                {
+                    Origins = new List<Coordenada>() { coordenadasOrigem },
+                    Destinations = coordenadasDestino
+                });
 
-            client.RequestFormat = DataFormat.Json;
-            client.AddHeader("Content-type", "application/json");
-            client.AddParameter("application/json", serializedRequest, ParameterType.RequestBody);
-            client.AddParameter("key", key, ParameterType.QueryString);
+                client.RequestFormat = DataFormat.Json;
+                client.AddHeader("Content-type", "application/json");
+                client.AddParameter("application/json", serializedRequest, ParameterType.RequestBody);
+                client.AddParameter("key", key, ParameterType.QueryString);
 
-            RestClient _rest = new RestClient();
-            var response = await _rest.ExecuteAsync<JObject>(client);
+                RestClient _rest = new RestClient();
+                var response = await _rest.ExecuteAsync<JObject>(client);
 
-            var jsonSerializerSettings = new JsonSerializerSettings();
-            jsonSerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
+                var jsonSerializerSettings = new JsonSerializerSettings();
+                jsonSerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
 
-            var result = JsonConvert.DeserializeObject<DistanciaConsultaResponse>(response.Content, jsonSerializerSettings);
+                var result = JsonConvert.DeserializeObject<DistanciaConsultaResponse>(response.Content, jsonSerializerSettings);
 
-            foreach(var escola in escolas)
-            {
-                escola.DistanciaOrigem = result.ResourceSets.SelectMany(rs => rs.Resources.SelectMany(r => r.Results.Where(w => w.DestinationIndex == escolas.IndexOf(escola)))).FirstOrDefault().TravelDistance;
+                foreach (var escola in escolas)
+                {
+                    escola.DistanciaOrigem = result.ResourceSets.SelectMany(rs => rs.Resources.SelectMany(r => r.Results.Where(w => w.DestinationIndex == escolas.IndexOf(escola)))).FirstOrDefault().TravelDistance;
+                }
+
+                return escolas.OrderBy(o => o.DistanciaOrigem).Union(escolasSemPosicao).ToList();
             }
-
-            return escolas.OrderBy(o => o.DistanciaOrigem).ToList();
+            catch (Exception ex)
+            {
+                throw ex;
+            }            
         }
     }
 }
