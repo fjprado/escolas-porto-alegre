@@ -4,5 +4,32 @@
         <name>codehb-escolas-porto-alegre</name>
     </assembly>
     <members>
+        <member name="M:codehb_escolas_porto_alegre.Controllers.EnderecoController.GetListEnderecosSugeridos(codehb_escolas_porto_alegre.Models.EnderecoOrigemModel)">
+            <summary>
+            Procura por endereços de acordo com parametro informado
+            </summary>
+            <param name="endereco">Informe qual o endereço de pesquisa por endereços sugeridos</param>
+            <response code="200">Retorna a lista de endereços</response>
+            <response code="204">Se não houver enderecos</response>   
+            <response code="400">Caso ocorra erro retorna a mensagem de exceção</response>   
+        </member>
+        <member name="M:codehb_escolas_porto_alegre.Controllers.EnderecoController.GetCoordenadasEndereco(codehb_escolas_porto_alegre.Models.EnderecoOrigemModel)">
+            <summary>
+            Procura por coordenadas de endereço de acordo com endereco informado
+            </summary>
+            <param name="endereco">Informe qual o endereço de pesquisa para obter as coordenadas</param>
+            <response code="200">Retorna objeto contendo as coordenadas</response>
+            <response code="204">Se não houver coordenada</response>   
+            <response code="400">Caso ocorra erro retorna a mensagem de exceção</response> 
+        </member>
+        <member name="M:codehb_escolas_porto_alegre.Controllers.EscolaController.GetListEscolas(codehb_escolas_porto_alegre.Models.Coordenada)">
+            <summary>
+            Procura por todas as escolas mais próximas às coordenadas informadas
+            </summary>
+            <param name="coordenadaOrigem">Informa qual a coordenada de origem</param>
+            <response code="200">Retorna a lista de escolas ordenadas por distância</response>
+            <response code="204">Se não houver lista de escolas</response>   
+            <response code="400">Caso ocorra erro retorna a mensagem de exceção</response> 
+        </member>
     </members>
 </doc>

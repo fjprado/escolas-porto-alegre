@@ -22,11 +22,12 @@ namespace codehb_escolas_porto_alegre.Controllers
         }
 
         /// <summary>
-        /// Procura por todas as escolas mais próximas ao endereço informado
+        /// Procura por todas as escolas mais próximas às coordenadas informadas
         /// </summary>
-        /// <param name="endereco">Informa qual o endereço de origem</param>
-        /// <response code="200">Retorna a lista de escolas</response>
+        /// <param name="coordenadaOrigem">Informa qual a coordenada de origem</param>
+        /// <response code="200">Retorna a lista de escolas ordenadas por distância</response>
         /// <response code="204">Se não houver lista de escolas</response>   
+        /// <response code="400">Caso ocorra erro retorna a mensagem de exceção</response> 
         [HttpPost("GetListEscolas")]
         public async Task<ActionResult<IEnumerable<Escola>>> GetListEscolas([FromBody] Coordenada coordenadaOrigem)
         {
