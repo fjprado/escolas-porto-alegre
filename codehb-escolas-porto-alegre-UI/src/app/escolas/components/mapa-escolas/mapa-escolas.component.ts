@@ -80,7 +80,6 @@ export class MapaEscolasComponent implements OnInit {
   }
 
   private destinationsMarkers(map: google.maps.Map, listaEscolas: Escola[]) {
-    console.log(listaEscolas);
     listaEscolas.forEach((e: Escola) => {
       const destinationMarker = new google.maps.Marker({
         position: {
