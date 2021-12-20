@@ -18,7 +18,7 @@ namespace codehb_escolas_porto_alegre.Services.Enderecos
             {
                 var urlConsultaLocalizacao = "http://dev.virtualearth.net/REST/v1/Autosuggest";
                 var client = new RestRequest(urlConsultaLocalizacao, Method.GET);
-                var key = "AmldTSU6HNRemL234Vk0ZkHEVcK1aU-kCHVmNA_fj09_Crqkg9wZWJdCc-PYSIK6";
+                var key = Environment.GetEnvironmentVariable("api_key_bing");
 
                 client.RequestFormat = DataFormat.Json;
                 client.AddHeader("Content-type", "application/json");
@@ -48,8 +48,8 @@ namespace codehb_escolas_porto_alegre.Services.Enderecos
             try
             {
                 var urlConsultaLocalizacao = "http://dev.virtualearth.net/REST/v1/Locations";
-                var client = new RestRequest(urlConsultaLocalizacao, Method.GET);
-                var key = "AmldTSU6HNRemL234Vk0ZkHEVcK1aU-kCHVmNA_fj09_Crqkg9wZWJdCc-PYSIK6";
+                var client = new RestRequest(urlConsultaLocalizacao, Method.GET);               
+                var key = Environment.GetEnvironmentVariable("api_key_bing");
 
                 client.RequestFormat = DataFormat.Json;
                 client.AddHeader("Content-type", "application/json");

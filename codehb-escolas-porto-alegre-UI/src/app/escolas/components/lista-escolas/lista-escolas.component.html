@@ -9,10 +9,10 @@
         <b>{{ item.nome }} </b><br />
         <b>Distância:</b> {{ item.distanciaOrigem | number: "1.0-4":"pt" }}KM
       </div>
-      <div class="col-lg-3">
+      <div class="col-lg-3 d-flex justify-content-end">
         <button
           type="submit"
-          class="btn btn-danger"
+          class="btn btn-danger alig"
           (click)="this.verRota(item, indexOfelement)"
         >
           Ver Rota

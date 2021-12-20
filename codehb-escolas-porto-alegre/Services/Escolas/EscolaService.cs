@@ -51,7 +51,7 @@ namespace codehb_escolas_porto_alegre.Services.Escolas
             {
                 var urlConsultaLocalizacao = "https://dev.virtualearth.net/REST/v1/Routes/DistanceMatrix";
                 var client = new RestRequest(urlConsultaLocalizacao, Method.POST);
-                var key = "AmldTSU6HNRemL234Vk0ZkHEVcK1aU-kCHVmNA_fj09_Crqkg9wZWJdCc-PYSIK6";
+                var key = Environment.GetEnvironmentVariable("api_key_bing");
                 var escolasSemPosicao = escolas.Where(w => w.Latitude == 0 || w.Longitude == 0).ToList();
                 escolas = escolas.Where(w => w.Latitude != 0 && w.Longitude != 0).ToList();
                 var coordenadasDestino = escolas.Select(s => new Coordenada() { Latitude = s.Latitude, Longitude = s.Longitude }).ToList();
